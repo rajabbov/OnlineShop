@@ -1,21 +1,51 @@
 # OnlineShop
 
-The navigation shell of a shopping app: a bottom bar switching between four fragments.
+![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?logo=kotlin&logoColor=white) ![Android](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=white) ![minSdk 24](https://img.shields.io/badge/minSdk_24-555)
+
+The navigation skeleton of a shopping app: four tabs — **Home, Favorites, Cart, Profile** — behind a bottom navigation bar. The interesting part is *how* the tabs switch: fragments are created once and then **shown and hidden**, not replaced, so each tab keeps its state.
 
 ## Features
 
-- Home, Favorites, Cart and Profile fragments
-- Bottom navigation wired to a single host activity
-- View binding throughout
+- Bottom navigation with four destinations
+- **State-preserving tab switching** — scroll position and input survive tab changes
+- Each tab is its own fragment with a `newInstance()` factory
+- View binding in the host activity
+
+## How it works
+
+All four fragments are added to the container at start-up and immediately hidden; only the active one is shown:
+
+```kotlin
+supportFragmentManager.beginTransaction()
+    .hide(activeFragment)
+    .show(cartFragment)
+    .commit()
+activeFragment = cartFragment
+```
+
+Compared with `replace()`, this avoids recreating the fragment's view on every tap — the same approach many production apps used before the Navigation component supported multiple back stacks.
+
+## Project structure
+
+```
+com.example.onlineshop
+├── screen/
+│   ├── MainActivity.kt
+│   ├── cart/CartFragment.kt
+│   ├── favorite/FavoriteFragment.kt
+│   ├── home/HomeFragment.kt
+│   ├── profile/ProfileFragment.kt
+```
+
+<sub>5 source files · 134 lines of code · 5 layouts</sub>
 
 ## Tech stack
 
-- **Language:** Kotlin
-- **UI:** XML layouts with View binding
-- **SDK:** min 24, target 35
-- **Package:** `com.example.onlineshop`
-
-<sub>7 source files · 168 lines of code · 5 layouts</sub>
+| | |
+|---|---|
+| **Language** | Kotlin |
+| **UI** | XML layouts, View Binding |
+| **Min / Target SDK** | 24 / 35 |
 
 ## Getting started
 
@@ -23,8 +53,14 @@ The navigation shell of a shopping app: a bottom bar switching between four frag
 git clone https://github.com/rajabbov/OnlineShop.git
 ```
 
-Open the folder in Android Studio, let Gradle sync, and run the `app` configuration on a device or emulator.
+1. Open the folder in **Android Studio** (Ladybug or newer).
+2. Let Gradle sync.
+3. Run the `app` configuration on a device or emulator.
 
-## License
+## Known limitations
 
-MIT
+- The tab screens are placeholders — product listing and cart logic are not implemented yet.
+
+---
+
+Made by **Ibrohimjon Rajabboyev** · [@rajabbov](https://github.com/rajabbov)
